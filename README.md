@@ -1,8 +1,2 @@
 # Car-store
-This data contain database of a car store
-Sales
-employees
-offices
-orders
-products
-payments
+This data contain database of a car store downloaded from mysqltutorial.org
