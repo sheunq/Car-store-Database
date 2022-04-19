@@ -1,7 +1,7 @@
-drop database if exists `new`;
+drop database if exists `car store`;
 
-create database `New`;
-use `New`;
+create database `car store`;
+use `car store`;
 
 set foreign_key_checks =0;
 
