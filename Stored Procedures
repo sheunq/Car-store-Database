@@ -1,0 +1,34 @@
+-- Customers info
+
+drop procedure if exists `customer info`;
+Delimiter $$
+create procedure `Customer Info` (in `customer Number` int)
+begin
+select
+`customer number`, `contact first name` `First Name`, `contact last name` `Last Name`, phone, `Addressline 1`, country,
+year(`order Date`) `Order Year`,sum(`Quantity ordered`) `Total Number of Orders`
+from customers
+join
+orders using (`customer number`)
+join
+`order details` using (`order number`)
+group by `Customer Number`, `order year`
+;
+end $$
+Delimiter ;
+
+-- Products info
+
+Delimiter $$
+create procedure `Product info` (in `product code` varchar(30))
+begin
+select `product code`, `product name`, `product line`, sum(`Quantity in stock`) `Quantity in stock`
+from 
+products
+group by `product code`
+;
+
+end $$
+
+
+Delimiter ;
