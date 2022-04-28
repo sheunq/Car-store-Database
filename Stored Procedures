@@ -1,5 +1,4 @@
--- Customers info
-
+#     CUSTOMER INFO
 drop procedure if exists `customer info`;
 Delimiter $$
 create procedure `Customer Info` (in `customer Number` int)
@@ -17,12 +16,22 @@ group by `Customer Number`, `order year`
 end $$
 Delimiter ;
 
--- Products info
-
+-- Product info
+drop procedure if exists `product info`;
 Delimiter $$
 create procedure `Product info` (in `product code` varchar(30))
 begin
-select `product code`, `product name`, `product line`, sum(`Quantity in stock`) `Quantity in stock`
+select `product code` as 'Product code' , `product name`, `product line`, sum(`Quantity in stock`) `Quantity in stock`,
+case
+    when `Quantity in stock`= 0 
+         then 'Empty stock'
+    when  `Quantity in stock` = 1 and `Quantity in stock` <= 300
+         then 'Urgent Refill '  
+    when `quantity in stock` >300 and `quantity in stock` <=20000
+         then 'Refill'
+    else 
+        'Dont Refill Yet'
+     end  as 'Indicator'   
 from 
 products
 group by `product code`
@@ -30,5 +39,51 @@ group by `product code`
 
 end $$
 
+ 
+Delimiter ;
 
+-- customer level
+drop  procedure if exists `customer level`;
+
+delimiter $$
+
+create procedure `customer level` (in p_customer_number int, out P_customer_level varchar(20))
+
+Begin
+
+declare credit decimal(10,2) default 0;
+
+select  `credit line` 
+into
+ credit
+from customers
+where `customer number`= P_customer_number;
+
+case 
+  when credit = 0 then 
+    set P_customer_level= 'Zero level';
+  when credit > 0 and  credit <= 10000 then 
+         set P_customer_level= 'Low level';
+  when credit > 10000 and credit < 20000 then 
+     set P_customer_level= 'Average level';
+  else 
+     set P_customer_level= 'excellent level';
+end case;    
+
+END $$
+
+delimiter ;
+
+ # EMPLOYEES INFO
+ 
+ drop procedure if exists `employee info`; 
+Delimiter $$
+
+create procedure `Employee Info` (in `Employee Number` int)
+begin
+select `Employee Number`, concat(`First Name`, ' ', `Last Name`), Email, `Job Title`, city, phone, country
+from employees 
+join 
+offices using (`office code`) ;
+end $$
 Delimiter ;
